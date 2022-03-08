@@ -1,0 +1,1066 @@
+﻿@model BusinessHoursViewModel
+
+@{
+    ViewData["Title"] = "İş Saatleri";
+}
+<input hidden id="currentUserId" value="@Model.User.Id" />
+<section class="app-user-view-account mt-5">
+    <div class="row">
+        <!-- User Sidebar -->
+        <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+            <!-- User Card -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="user-avatar-section">
+                        <div class="d-flex align-items-center flex-column">
+                            @*                                            <img class="img-fluid rounded mt-3 mb-2"
+                                src="../../../app-assets/images/portrait/small/avatar-s-2.jpg"
+                                height="110" width="110" alt="User avatar" />*@
+                            <div class="user-info text-center">
+                                <h1>@Model.User.Name @Model.User.Surname</h1>
+                                <span class="profile-job">@Model.User.Job</span>
+                            </div>
+                        </div>
+                    </div>
+                    @*                                    <div class="d-flex justify-content-around my-2 pt-75">
+                        <div class="d-flex align-items-start me-2">
+                        <span class="badge bg-light-primary p-75 rounded">
+                        <i data-feather="check" class="font-medium-2"></i>
+                        </span>
+                        <div class="ms-75">
+                        <h4 class="mb-0">1.23k</h4>
+                        <small>Tasks Done</small>
+                        </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                        <span class="badge bg-light-primary p-75 rounded">
+                        <i data-feather="briefcase" class="font-medium-2"></i>
+                        </span>
+                        <div class="ms-75">
+                        <h4 class="mb-0">568</h4>
+                        <small>Projects Done</small>
+                        </div>
+                        </div>
+                        </div>*@
+                    <h4 class="fw-bolder border-bottom pb-50 mb-1">Detaylar</h4>
+                    <div class="info-container">
+                        <ul class="list-unstyled">
+                            <li class="mb-75">
+                                <span class="fw-bolder me-25">Kullanıcı Adı:</span>
+                                <span>@Model.User.UserName</span>
+                            </li>
+                            <li class="mb-75">
+                                <span class="fw-bolder me-25">Email Adresi:</span>
+                                <span>@Model.User.Email</span>
+                            </li>
+                            <li class="mb-75">
+                                <span class="fw-bolder me-25">Meslek:</span>
+                                <span>@Model.User.Job</span>
+                            </li>
+                            <li class="mb-75">
+                                <span class="fw-bolder me-25">Hesap Türü:</span>
+                                <span>@Model.User.AccountType</span>
+                            </li>
+                        </ul>
+                        <div class="d-flex justify-content-center pt-2">
+                            <a href="javascript:;" class="btn btn-primary me-1"
+                               data-bs-target="#editUser" data-bs-toggle="modal">
+                                Düzenle
+                            </a>
+                            @*                                            <a href="javascript:;"
+                                class="btn btn-outline-danger suspend-user">Suspended</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /User Card -->
+        </div>
+        <!--/ User Sidebar -->
+        <!-- User Content -->
+        <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+            <!-- User Pills -->
+            <ul class="nav nav-pills mb-2">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Profile" asp-action="Index">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-user">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="fw-bold">Hesabım</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" asp-controller="Profile" asp-action="BusinessHours">
+                        <svg width="20" height="20" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" fill="var(--primary)" style="fill:var(--primary)!important;"
+                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 142.447 142.447"
+                             style="enable-background:new 0 0 142.447 142.447;" xml:space="preserve">
+                        <g>
+                        <path d="M71.224,0C31.951,0,0,31.951,0,71.224s31.951,71.224,71.224,71.224s71.224-31.951,71.224-71.224
+		                    S110.496,0,71.224,0z M71.224,127.447C40.222,127.447,15,102.226,15,71.224S40.222,15,71.224,15s56.224,25.222,56.224,56.224
+		                    S102.226,127.447,71.224,127.447z" />
+                        <path d="M100.923,72.016H71.724V46.724c0-4.143-3.357-7.5-7.5-7.5s-7.5,3.357-7.5,7.5v32.792
+		                    c0,4.143,3.357,7.5,7.5,7.5h36.699c4.143,0,7.5-3.357,7.5-7.5S105.065,72.016,100.923,72.016z" />
+                        </g>
+                    </svg>
+                        <span class="fw-bold">İş Saatleri</span>
+                    </a>
+                </li>
+            </ul>
+            <!--/ User Pills -->
+            <!-- Business Hours -->
+            <div class="card">
+                <h4 class="card-header">Çalışma Saatlerini Düzenle</h4>
+                <p class="card-subtitle p-2 pt-0 pb-1">Renkli olan saatler <strong style="colorvar(--primary);">çalıştığınız saatlerdir</strong>. Kapatmak için butona tıklayın.</p>
+                <div class="businessHoursContainer">
+                    <div class="businessHours">
+                        <div class="day">
+                            <p>Pazartesi</p>
+                        </div>
+                        <div class="hours" id="pazartesi">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="businessHours">
+                        <div class="day">
+                            <p>Salı</p>
+                        </div>
+                        <div class="hours" id="sali">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="businessHours">
+                        <div class="day">
+                            <p>Çarşamba</p>
+                        </div>
+                        <div class="hours" id="carsamba">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="businessHours">
+                        <div class="day">
+                            <p>Perşembe</p>
+                        </div>
+                        <div class="hours" id="persembe">
+                        </div>
+                    </div>
+                    <div class="businessHours">
+                        <div class="day">
+                            <p>Cuma</p>
+                        </div>
+                        <div class="hours" id="cuma">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="businessHours">
+                        <div class="day">
+                            <p>Cumartesi</p>
+                        </div>
+                        <div class="hours" id="cumartesi">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="businessHours">
+                        <div class="day">
+                            <p>Pazar</p>
+                        </div>
+                        <div class="hours" id="pazar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Business Hours -->
+        </div>
+        <!--/ User Content -->
+    </div>
+</section>
+
+@section Scripts {
+<script>
+
+    var teacherHours = [];
+    var businessHours = [ // TÜM VAKİTLER
+        {
+            daysOfWeek: [0],
+            startTime: "08:00",
+            endTime: "08:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "08:50",
+            endTime: "09:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "09:40",
+            endTime: "10:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "10:30",
+            endTime: "11:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "11:20",
+            endTime: "12:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "12:10",
+            endTime: "13:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "13:00",
+            endTime: "13:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "13:50",
+            endTime: "14:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "14:40",
+            endTime: "15:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "15:30",
+            endTime: "16:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "16:20",
+            endTime: "17:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "17:10",
+            endTime: "18:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "18:00",
+            endTime: "18:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "18:50",
+            endTime: "19:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [0],
+            startTime: "20:30",
+            endTime: "21:10",
+            disabled: false,
+        },
+
+        {
+            daysOfWeek: [1],
+            startTime: "08:00",
+            endTime: "08:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "08:50",
+            endTime: "09:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "09:40",
+            endTime: "10:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "10:30",
+            endTime: "11:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "11:20",
+            endTime: "12:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "12:10",
+            endTime: "13:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "13:00",
+            endTime: "13:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "13:50",
+            endTime: "14:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "14:40",
+            endTime: "15:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "15:30",
+            endTime: "16:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "16:20",
+            endTime: "17:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "17:10",
+            endTime: "18:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "18:00",
+            endTime: "18:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "18:50",
+            endTime: "19:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [1],
+            startTime: "20:30",
+            endTime: "21:10",
+            disabled: false,
+        },
+
+        {
+            daysOfWeek: [2],
+            startTime: "08:00",
+            endTime: "08:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "08:50",
+            endTime: "09:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "09:40",
+            endTime: "10:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "10:30",
+            endTime: "11:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "11:20",
+            endTime: "12:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "12:10",
+            endTime: "13:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "13:00",
+            endTime: "13:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "13:50",
+            endTime: "14:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "14:40",
+            endTime: "15:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "15:30",
+            endTime: "16:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "16:20",
+            endTime: "17:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "17:10",
+            endTime: "18:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "18:00",
+            endTime: "18:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "18:50",
+            endTime: "19:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [2],
+            startTime: "20:30",
+            endTime: "21:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "08:00",
+            endTime: "08:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "08:50",
+            endTime: "09:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "09:40",
+            endTime: "10:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "10:30",
+            endTime: "11:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "11:20",
+            endTime: "12:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "12:10",
+            endTime: "13:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "13:00",
+            endTime: "13:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "13:50",
+            endTime: "14:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "14:40",
+            endTime: "15:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "15:30",
+            endTime: "16:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "16:20",
+            endTime: "17:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "17:10",
+            endTime: "18:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "18:00",
+            endTime: "18:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "18:50",
+            endTime: "19:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [3],
+            startTime: "20:30",
+            endTime: "21:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "08:00",
+            endTime: "08:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "08:50",
+            endTime: "09:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "09:40",
+            endTime: "10:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "10:30",
+            endTime: "11:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "11:20",
+            endTime: "12:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "12:10",
+            endTime: "13:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "13:00",
+            endTime: "13:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "13:50",
+            endTime: "14:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "14:40",
+            endTime: "15:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "15:30",
+            endTime: "16:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "16:20",
+            endTime: "17:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "17:10",
+            endTime: "18:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "18:00",
+            endTime: "18:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "18:50",
+            endTime: "19:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [4],
+            startTime: "20:30",
+            endTime: "21:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "08:00",
+            endTime: "08:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "08:50",
+            endTime: "09:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "09:40",
+            endTime: "10:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "10:30",
+            endTime: "11:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "11:20",
+            endTime: "12:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "12:10",
+            endTime: "13:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "13:00",
+            endTime: "13:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "13:50",
+            endTime: "14:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "14:40",
+            endTime: "15:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "15:30",
+            endTime: "16:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "16:20",
+            endTime: "17:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "17:10",
+            endTime: "18:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "18:00",
+            endTime: "18:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "18:50",
+            endTime: "19:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [5],
+            startTime: "20:30",
+            endTime: "21:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "08:00",
+            endTime: "08:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "08:50",
+            endTime: "09:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "09:40",
+            endTime: "10:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "10:30",
+            endTime: "11:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "11:20",
+            endTime: "12:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "12:10",
+            endTime: "13:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "13:00",
+            endTime: "13:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "13:50",
+            endTime: "14:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "14:40",
+            endTime: "15:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "15:30",
+            endTime: "16:20",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "16:20",
+            endTime: "17:10",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "17:10",
+            endTime: "18:00",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "18:00",
+            endTime: "18:50",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "18:50",
+            endTime: "19:40",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "19:40",
+            endTime: "20:30",
+            disabled: false,
+        },
+        {
+            daysOfWeek: [6],
+            startTime: "20:30",
+            endTime: "21:10",
+            disabled: false,
+        }
+    ];
+    
+    $(document).ready(function() {
+        getBusinessHoursByTeacher();
+    });
+
+    function printBusinessHour() {
+        $("#pazartesi").html("");
+        $("#sali").html("");
+        $("#carsamba").html("");
+        $("#persembe").html("");
+        $("#cuma").html("");
+        $("#cumartesi").html("");
+        $("#pazar").html("");
+
+        businessHours.forEach(item => {
+            if(item.daysOfWeek == 1) {
+            var searchResult = teacherHours.find(s=> s.daysOfWeek == item.daysOfWeek && s.startTime == item.startTime && s.endTime == item.endTime);
+                if( searchResult != undefined) {
+                $("#pazartesi").append(`
+                        <button class="hour btn-primary2 disable" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                `);
+                }else {
+                    $("#pazartesi").append(`
+                            <button class="hour btn-primary2" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                    `);
+                }
+            }else if (item.daysOfWeek == 2) {
+            var searchResult = teacherHours.find(s=> s.daysOfWeek == item.daysOfWeek && s.startTime == item.startTime && s.endTime == item.endTime);
+                if( searchResult != undefined) {
+                $("#sali").append(`
+                        <button class="hour btn-primary2 disable" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                `);
+                }else {
+                    $("#sali").append(`
+                            <button class="hour btn-primary2" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                    `);
+                }
+            }
+            else if (item.daysOfWeek == 3) {
+            var searchResult = teacherHours.find(s=> s.daysOfWeek == item.daysOfWeek && s.startTime == item.startTime && s.endTime == item.endTime);
+                if( searchResult != undefined) {
+                $("#carsamba").append(`
+                        <button class="hour btn-primary2 disable" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                `);
+                }else {
+                    $("#carsamba").append(`
+                            <button class="hour btn-primary2" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                    `);
+                }
+            }
+            else if (item.daysOfWeek == 4) {
+            var searchResult = teacherHours.find(s=> s.daysOfWeek == item.daysOfWeek && s.startTime == item.startTime && s.endTime == item.endTime);
+                if( searchResult != undefined) {
+                $("#persembe").append(`
+                        <button class="hour btn-primary2 disable" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                `);
+                }else {
+                    $("#persembe").append(`
+                            <button class="hour btn-primary2" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                    `);
+                }
+            }
+            else if (item.daysOfWeek == 5) {
+            var searchResult = teacherHours.find(s=> s.daysOfWeek == item.daysOfWeek && s.startTime == item.startTime && s.endTime == item.endTime);
+                if( searchResult != undefined) {
+                $("#cuma").append(`
+                        <button class="hour btn-primary2 disable" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                `);
+                }else {
+                    $("#cuma").append(`
+                            <button class="hour btn-primary2" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                    `);
+                }
+            }
+            else if (item.daysOfWeek == 6) {
+            var searchResult = teacherHours.find(s=> s.daysOfWeek == item.daysOfWeek && s.startTime == item.startTime && s.endTime == item.endTime);
+            if( searchResult != undefined) {
+                $("#cumartesi").append(`
+                        <button class="hour btn-primary2 disable" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                `);
+                }else {
+                    $("#cumartesi").append(`
+                            <button class="hour btn-primary2" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                    `);
+                }
+            }
+            else if (item.daysOfWeek == 0) {
+            var searchResult = teacherHours.find(s=> s.daysOfWeek == item.daysOfWeek && s.startTime == item.startTime && s.endTime == item.endTime);
+                if( searchResult != undefined) {
+                $("#pazar").append(`
+                        <button class="hour btn-primary2 disable" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                `);
+                }else {
+                    $("#pazar").append(`
+                            <button class="hour btn-primary2" data-day="`+item.daysOfWeek+`" data-start="`+item.startTime+`" data-end="`+item.endTime+`">`+item.startTime+`<hr style="margin: .5rem 0rem;">`+item.endTime+`</button>
+                    `);
+                }
+            }
+        })
+        hoursClick();
+    }
+
+    function hoursClick() {
+        $(".hour").click(function () {
+            var day = $(this).data("day");
+            var start = $(this).data("start");
+            var end = $(this).data("end");
+            var data = {
+                UserId: $("#currentUserId").val(),
+                daysOfWeek: day,
+                startTime: start,
+                endTime: end,
+            }
+                addOrDeleteBusinessHours(data);
+        });
+    }
+
+    function addOrDeleteBusinessHours(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/businesshour/AddorDeleteBusinessHour',
+            data: data,
+            success: function(response){
+                getBusinessHoursByTeacher();
+                if(response == "Kayıt eklendi"){
+                    toastme.success("Çalışma saati eklendi");
+                } else if (response == "Kayıt silindi"){
+                    toastme.info("Çalışma silindi");
+                }
+                else {
+                    toastme.warning("İş saati güncelleme başarısız");
+                }
+            },
+            error: function() {
+                getBusinessHoursByTeacher();
+                    toastme.error("İş saati güncelleme işlemi gerçekleşmedi. Erişim sağlanamadı!");
+            }
+        })
+    }
+
+    function getBusinessHoursByTeacher() {
+        var userId = $("#currentUserId").val();
+        $.ajax({
+            type: 'GET',
+            url: '/businesshour/GetBusinessHourByTeacher?userId=' + userId,
+            success: function(response){
+                teacherHours = [];
+            response.forEach(item => {
+                teacherHours.push(
+                    {
+                        daysOfWeek: item.daysOfWeek,
+                        startTime: item.startTime,
+                        endTime: item.endTime,
+                    });
+            });
+        console.log(teacherHours);
+            printBusinessHour();
+            },
+            error: function() {
+            toastme.error("İş saati güncelleme işlemi gerçekleşmedi. Erişim sağlanamadı!");
+            }
+        })
+    }
+
+</script>
+}

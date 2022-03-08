@@ -1,0 +1,1317 @@
+﻿@model TeacherViewModel
+@{
+    ViewData["Title"] = @Model.User.Name + " " + @Model.User.Surname + " - Profil";
+}
+@section Styles {
+<link rel="stylesheet" href='/lib/fullcalendar/lib/main.css' asp-append-version="true" />
+
+<style>
+    .fc-timegrid-col-events {
+        width: 100% !important;
+    }
+
+    .fc-direction-ltr .fc-timegrid-col-events {
+        margin: 0 !important;
+    }
+</style>
+}
+<div class="modal fade mt-5" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ekle/Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input hidden id="appointmentId" />
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Başlangıç Tarihi :</label>
+                            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                <input disabled id="inputStartDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" />
+                                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Bitiş Tarihi :</label>
+                            <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                <input disabled id="inputEndDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2" />
+                                <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Öğrenci :</label>
+                            <select id="selectStudentId" class=form-control asp-items="Model.StudentSelectList">
+                                <option value="0">Lütfen Öğrenci seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Öğretmen :</label>
+                            <select disabled id="selectTeacherId" class=form-control asp-items="Model.TeacherSelectList">
+                                <option value="0">Lütfen öğretmen seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="form-control-label">Açıklama :</label>
+                            <input id="inputDescription" type="text" class="form-control"></input>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button id="btnSave" type="button" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade mt-5" id="detailModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Randevu Detayları</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Başlangıç Tarihi :</label>
+                            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                <input disabled id="inputStartDateDetail" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" />
+                                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Bitiş Tarihi :</label>
+                            <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                <input disabled id="inputEndDateDetail" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2" />
+                                <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Öğrenci :</label>
+                            <select disabled id="selectStudentIdDetail" class=form-control asp-items="Model.StudentSelectList">
+                                <option value="0">Lütfen Öğrenci seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="form-control-label">Öğretmen :</label>
+                            <select disabled id="selectTeacherIdDetail" class=form-control asp-items="Model.TeacherSelectList">
+                                <option value="0">Lütfen öğretmen seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="form-control-label">Açıklama :</label>
+                            <input disabled id="inputDescriptionDetail" type="text" class="form-control"></input>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btnDelete" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input hidden id="currentUserId" value="@Model.User.Id" />
+<input hidden id="currentTeacherId" value="0" />
+
+<section class="app-user-view-account mt-5">
+    <div class="row">
+        <!-- User Sidebar -->
+        <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+            <!-- User Card -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="user-avatar-section">
+                        <div class="d-flex align-items-center flex-column">
+                            @*                                            <img class="img-fluid rounded mt-3 mb-2"
+                                src="../../../app-assets/images/portrait/small/avatar-s-2.jpg"
+                                height="110" width="110" alt="User avatar" />*@
+                            <div class="user-info text-center">
+                                <h1>@Model.User.Name @Model.User.Surname</h1>
+                                <span class="profile-job">Müdür</span>
+                            </div>
+                        </div>
+                    </div>
+                    @*                                    <div class="d-flex justify-content-around my-2 pt-75">
+                        <div class="d-flex align-items-start me-2">
+                        <span class="badge bg-light-primary p-75 rounded">
+                        <i data-feather="check" class="font-medium-2"></i>
+                        </span>
+                        <div class="ms-75">
+                        <h4 class="mb-0">1.23k</h4>
+                        <small>Tasks Done</small>
+                        </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                        <span class="badge bg-light-primary p-75 rounded">
+                        <i data-feather="briefcase" class="font-medium-2"></i>
+                        </span>
+                        <div class="ms-75">
+                        <h4 class="mb-0">568</h4>
+                        <small>Projects Done</small>
+                        </div>
+                        </div>
+                        </div>*@
+                    <h4 class="fw-bolder border-bottom pb-50 mb-1">Detaylar</h4>
+                    <div class="info-container">
+                        <ul class="list-unstyled">
+                            <li class="mb-75">
+                                <span class="fw-bolder me-25">Kullanıcı Adı:</span>
+                                <span>@Model.User.UserName</span>
+                            </li>
+                            <li class="mb-75">
+                                <span class="fw-bolder me-25">Email Adresi:</span>
+                                <span>@Model.User.Email</span>
+                            </li>
+                            <li class="mb-75">
+                                <span class="fw-bolder me-25">Hesap Türü:</span>
+                                <span>@Model.User.AccountType</span>
+                            </li>
+                        </ul>
+                        <div class="d-flex justify-content-center pt-2">
+                            <a href="javascript:;" class="btn btn-primary me-1"
+                               data-bs-target="#editUser" data-bs-toggle="modal">
+                                Düzenle
+                            </a>
+                            @*                                            <a href="javascript:;"
+                                class="btn btn-outline-danger suspend-user">Suspended</a>*@
+                        </div>
+
+
+                        <div class="users mt-1">
+                            <h3>Öğretmenler</h3>
+                            <hr>
+                            @foreach (var item in Model.Teacher)
+                            {
+                                <div class="user teacher" data-teacherid="@item.Id">
+                                    <div class="user-name">
+                                        @item.Name @item.Surname
+                                        <span class="user-job">
+                                            @item.Job
+                                        </span>
+                                    </div>
+                                    <div class="user-color" style="background-color: @item.Color;">
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /User Card -->
+        </div>
+        <!--/ User Sidebar -->
+        <!-- User Content -->
+        <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+            <!-- User Pills -->
+            <ul class="nav nav-pills mb-2">
+                <li class="nav-item">
+                    <a class="nav-link active" href="app-user-view-account.html">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-user">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="fw-bold">Hesabım</span>
+                    </a>
+                </li>
+            </ul>
+            <!--/ User Pills -->
+            <!-- Calendar -->
+            <div class="card">
+                <h4 class="card-header">@Model.User.Name 'ın Takvimi</h4>
+                <div class="p-1">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+            <!-- /Calendar -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+</section>
+
+@*
+    <div class="profile">
+    <div class="profile-card cart">
+    <div class="profile-name">
+    <h2>
+    @Model.User.Name @Model.User.Surname</h1>
+    <span class="profile-job">
+    Müdür
+    </span>
+    </div>
+    <div class="profile-detay">
+    <h3>Detay</h3>
+    <hr>
+    <p><strong>Kullanıcı Adı:</strong> @Model.User.UserName</p>
+    <p><strong>Email Adresi:</strong> @Model.User.Email</p>
+    <p><strong>Yetki:</strong> Müdür</p>
+    </div>
+    <div class="profile-buttons">
+    <a href="" class="button">Düzenle</a>
+    </div>
+    <h3>Öğretmenler</h3>
+    <hr>
+
+    <div class="users">
+    @foreach (var item in Model.Teacher)
+    {
+    <div class="user teacher" data-teacherid="@item.Id">
+    <div class="user-name">
+    @item.Name @item.Surname
+    <span class="user-job">
+    @item.Job
+    </span>
+    </div>
+    <div class="user-color" style="background-color: @item.Color;">
+    </div>
+    </div>
+    }
+    </div>
+    </div>
+
+    <div class="calendar-container cart">
+
+    <div id="calendar"></div>
+    </div>
+    </div>*@
+
+@section Scripts {
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/e262157120.js" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" integrity="sha512-k6/Bkb8Fxf/c1Tkyl39yJwcOZ1P4cRrJu77p83zJjN2Z55prbFHxPs9vN7q3l3+tSMGPDdoH51AEU8Vgo1cgAA==" crossorigin="anonymous"></script>
+
+
+<script src='/lib/fullcalendar/lib/main.js' asp-append-version="true"></script>
+<script src='/lib/fullcalendar/lib/main.global.min.js' asp-append-version="true"></script>
+<script src="/lib/fullcalendar/lib/locales-all.js" asp-append-version="true"></script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+      var calendarEl = document.getElementById('calendar');
+      var saveModal = new bootstrap.Modal(document.getElementById("saveModal"));
+      var detailModal = new bootstrap.Modal(document.getElementById("detailModal"));
+      var selectedEvent = null;
+      var events = [];
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        timeZone: 'Europe/Istanbul',
+        initialView: 'timeGridWeek',
+        locale: 'tr',
+        themeSystem: 'bootstrap5',
+        bootstrapFontAwesome: {
+          dayGridMonth: 'calendar',
+          close: 'times',
+          prev: 'chevron-left',
+          next: 'chevron-right',
+          prevYear: 'angle-double-left',
+          nextYear: 'angle-double-right',
+          listWeek: 'list'
+        },
+        headerToolbar: {
+            left: 'today, next',
+            center: 'title',
+            right: 'timeGridWeek, listWeek'
+        },
+        navLinks: true,
+        slotMinTime: '08:00:00',
+        slotMaxTime: '21:00:00',
+        snapDuration: '00:50:00',
+        slotDuration: '00:50:00',
+        slotLabelFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+        },
+        fixedWeekCount: true,
+        showNonCurrentDates: false,
+        contentHeight: 650,
+        weekends: true,
+       // hiddenDays: [0],  0:pazar
+        allDaySlot: false,
+        titleFormat: {
+            year : 'numeric',
+            month: 'long',
+            day: 'numeric'
+        },
+        validRange: function(nowDate) {
+            return {
+                start: nowDate,
+            };
+        },
+        titleRangeSeparator : ' / ',
+        dayHeaderFormat: {
+          weekday: 'long'
+        },
+        dayHeaderFormat: {
+             weekday: 'long',
+             //day: 'numeric',
+        },
+        views: {
+              timeGridFourDay: {
+              type: 'timeGrid',
+              duration: { days: 4 },
+              buttonText: '4 Gün'
+            }
+        },
+        eventTimeFormat: {
+            hour: '2-digit',
+            minute: '2-digit'
+        },
+        selectable: true,
+        selectConstraint: "businessHours",
+        select: function (selectionInfo) {
+        let startDate = selectionInfo.start;
+        let endDate = selectionInfo.end;
+        var teacherId = $("#currentTeacherId").val();
+        if((endDate - startDate) / 1000000 == 3) {
+        if(teacherId == 0) {
+            toastme.error("Öğretmen seçiniz");
+            return;
+        }
+                selectedEvent = {
+                    id: 0,
+                    start: moment(selectionInfo.startStr),
+                    end: moment(selectionInfo.endStr),
+                    studentId: 0,
+                    description: "",
+                    teacherId: 0,
+                }
+                openAddOrUpdateModel();
+            }
+        },
+        eventClick: function(info) {
+              $("#selectTeacherIdDetail").val(info.event.extendedProps.userId),
+              $("#selectStudentIdDetail").val(info.event.extendedProps.studentId),
+              $("#inputStartDateDetail").val(moment(info.event.startStr).format("DD/MM/YYYY HH:mm")),
+              $("#inputEndDateDetail").val(moment(info.event.endStr).format("DD/MM/YYYY HH:mm")),
+              $("#inputStudentNameSurnameDetail").val(info.event.extendedProps.student),
+              $("#inputDescriptionDetail").val(info.event.extendedProps.description),
+            detailModal.show();
+        },
+        editable: false,
+      });
+      calendar.render();
+      getAppointment();
+      $('#datetimepicker1,#datetimepicker2').datetimepicker({
+          format:'DD/MM/YYYY HH:mm'
+      });
+
+      function getAppointmentsByTeacher(userId) {
+          $("#currentTeacherId").val(userId);
+          $.ajax({
+              type: 'GET',
+              url: '/appointment/GetAppointmentsByTeacher?userId='+userId,
+              success: function(response){
+                  events = [];
+                  var sources = calendar.getEventSources(); // event çek
+                  for(var i = 0; i < sources.length; i++) { // event sil
+                      sources[i].remove();
+                  }
+
+
+                  for (var i = 0; i < response.length; i++) {
+                      var hexColor = hexToRgb(response[i].color);
+                      var rgbColor = "rgb(" + hexColor[0] + ", " + hexColor[1] + ", " + hexColor[2] + ", 0.12)";
+                      events.push({
+                          id: response[i].id,
+                          title: response[i].student,
+                          teacher: response[i].teacher,
+                          studentId: response[i].studentId,
+                          start: response[i].startDate,
+                          end: response[i].endDate,
+                          description: response[i].description,
+                          textColor: response[i].color,
+                          backgroundColor: rgbColor,
+                          borderColor: rgbColor,
+                          userId: response[i].userId
+                      });
+                  }
+                  calendar.addEventSource(events);
+              },
+              error: function() {
+                      saveModal.hide();
+                      toastme.error("Randevu ekleme işlemi gerçekleşmedi");
+              }
+          })
+      }
+        function hexToRgb(hex) {
+            return ['0x' + hex[1] + hex[2] | 0, '0x' + hex[3] + hex[4] | 0, '0x' + hex[5] + hex[6] | 0];
+        }
+      function getAppointment(data) {
+          $.ajax({
+              type: 'GET',
+              url: '/appointment/GetAppointment',
+              success: function(response){
+                  events = [];
+                  var sources = calendar.getEventSources(); // event çek
+                  for(var i = 0; i < sources.length; i++) { // event sil
+                      sources[i].remove();
+                  }
+                  for (var i = 0; i < response.length; i++) {
+                      var hexColor = hexToRgb(response[i].color);
+                      var rgbColor = "rgb(" + hexColor[0] + ", " + hexColor[1] + ", " + hexColor[2] + ", 0.12)";
+                      events.push({
+                          id: response[i].id,
+                          title: response[i].student,
+                          teacher: response[i].teacher,
+                          studentId: response[i].studentId,
+                          start: response[i].startDate,
+                          end: response[i].endDate,
+                          description: response[i].description,
+                          textColor: response[i].color,
+                          backgroundColor: rgbColor,
+                          borderColor: rgbColor,
+                          userId: response[i].userId
+                      });
+                  }
+                  calendar.addEventSource(events);
+              },
+              error: function() {
+                      saveModal.hide();
+                      toastme.error("Randevu ekleme işlemi gerçekleşmedi");
+              }
+          })
+      }
+        function getBusinessHoursByTeacher(teacherId) {
+            $.ajax({
+                type: 'GET',
+                url: '/businesshour/GetBusinessHourByTeacher?userId=' + teacherId,
+                success: function(response){
+                var teacherHours = [];
+                var businessHours = [ // TÜM VAKİTLER
+                    {
+                        daysOfWeek: [0],
+                        startTime: "08:00",
+                        endTime: "08:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "08:50",
+                        endTime: "09:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "09:40",
+                        endTime: "10:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "10:30",
+                        endTime: "11:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "11:20",
+                        endTime: "12:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "12:10",
+                        endTime: "13:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "13:00",
+                        endTime: "13:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "13:50",
+                        endTime: "14:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "14:40",
+                        endTime: "15:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "15:30",
+                        endTime: "16:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "16:20",
+                        endTime: "17:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "17:10",
+                        endTime: "18:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "18:00",
+                        endTime: "18:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "18:50",
+                        endTime: "19:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [0],
+                        startTime: "20:30",
+                        endTime: "21:10",
+                        disabled: false,
+                    },
+        
+                    {
+                        daysOfWeek: [1],
+                        startTime: "08:00",
+                        endTime: "08:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "08:50",
+                        endTime: "09:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "09:40",
+                        endTime: "10:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "10:30",
+                        endTime: "11:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "11:20",
+                        endTime: "12:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "12:10",
+                        endTime: "13:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "13:00",
+                        endTime: "13:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "13:50",
+                        endTime: "14:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "14:40",
+                        endTime: "15:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "15:30",
+                        endTime: "16:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "16:20",
+                        endTime: "17:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "17:10",
+                        endTime: "18:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "18:00",
+                        endTime: "18:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "18:50",
+                        endTime: "19:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [1],
+                        startTime: "20:30",
+                        endTime: "21:10",
+                        disabled: false,
+                    },
+        
+                    {
+                        daysOfWeek: [2],
+                        startTime: "08:00",
+                        endTime: "08:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "08:50",
+                        endTime: "09:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "09:40",
+                        endTime: "10:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "10:30",
+                        endTime: "11:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "11:20",
+                        endTime: "12:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "12:10",
+                        endTime: "13:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "13:00",
+                        endTime: "13:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "13:50",
+                        endTime: "14:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "14:40",
+                        endTime: "15:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "15:30",
+                        endTime: "16:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "16:20",
+                        endTime: "17:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "17:10",
+                        endTime: "18:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "18:00",
+                        endTime: "18:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "18:50",
+                        endTime: "19:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [2],
+                        startTime: "20:30",
+                        endTime: "21:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "08:00",
+                        endTime: "08:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "08:50",
+                        endTime: "09:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "09:40",
+                        endTime: "10:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "10:30",
+                        endTime: "11:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "11:20",
+                        endTime: "12:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "12:10",
+                        endTime: "13:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "13:00",
+                        endTime: "13:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "13:50",
+                        endTime: "14:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "14:40",
+                        endTime: "15:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "15:30",
+                        endTime: "16:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "16:20",
+                        endTime: "17:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "17:10",
+                        endTime: "18:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "18:00",
+                        endTime: "18:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "18:50",
+                        endTime: "19:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [3],
+                        startTime: "20:30",
+                        endTime: "21:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "08:00",
+                        endTime: "08:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "08:50",
+                        endTime: "09:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "09:40",
+                        endTime: "10:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "10:30",
+                        endTime: "11:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "11:20",
+                        endTime: "12:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "12:10",
+                        endTime: "13:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "13:00",
+                        endTime: "13:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "13:50",
+                        endTime: "14:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "14:40",
+                        endTime: "15:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "15:30",
+                        endTime: "16:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "16:20",
+                        endTime: "17:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "17:10",
+                        endTime: "18:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "18:00",
+                        endTime: "18:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "18:50",
+                        endTime: "19:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [4],
+                        startTime: "20:30",
+                        endTime: "21:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "08:00",
+                        endTime: "08:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "08:50",
+                        endTime: "09:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "09:40",
+                        endTime: "10:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "10:30",
+                        endTime: "11:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "11:20",
+                        endTime: "12:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "12:10",
+                        endTime: "13:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "13:00",
+                        endTime: "13:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "13:50",
+                        endTime: "14:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "14:40",
+                        endTime: "15:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "15:30",
+                        endTime: "16:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "16:20",
+                        endTime: "17:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "17:10",
+                        endTime: "18:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "18:00",
+                        endTime: "18:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "18:50",
+                        endTime: "19:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [5],
+                        startTime: "20:30",
+                        endTime: "21:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "08:00",
+                        endTime: "08:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "08:50",
+                        endTime: "09:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "09:40",
+                        endTime: "10:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "10:30",
+                        endTime: "11:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "11:20",
+                        endTime: "12:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "12:10",
+                        endTime: "13:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "13:00",
+                        endTime: "13:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "13:50",
+                        endTime: "14:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "14:40",
+                        endTime: "15:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "15:30",
+                        endTime: "16:20",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "16:20",
+                        endTime: "17:10",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "17:10",
+                        endTime: "18:00",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "18:00",
+                        endTime: "18:50",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "18:50",
+                        endTime: "19:40",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "19:40",
+                        endTime: "20:30",
+                        disabled: false,
+                    },
+                    {
+                        daysOfWeek: [6],
+                        startTime: "20:30",
+                        endTime: "21:10",
+                        disabled: false,
+                    }
+                ];
+                response.forEach(item => {
+                    teacherHours.push(
+                        {
+                            daysOfWeek: item.daysOfWeek,
+                            startTime: item.startTime,
+                            endTime: item.endTime,
+                            startTime: item.startTime,
+                        }
+                    );
+                })
+                teacherHours.forEach(item =>{
+                    let searchResult = businessHours.find(hour => hour.startTime == item.startTime && hour.endTime == item.endTime && hour.daysOfWeek == item.daysOfWeek);
+                    var hoursIndex = businessHours.indexOf(searchResult);
+                    businessHours.splice(hoursIndex, 1);
+                })
+                console.log(businessHours);
+                calendar.setOption('businessHours', businessHours);
+                },
+                error: function() {
+                toastme.error("İş saati güncelleme işlemi gerçekleşmedi. Erişim sağlanamadı!");
+                }
+            })
+        }
+      function openAddOrUpdateModel() {
+
+          if(selectedEvent != null) {
+              $("#inputStartDate").val(selectedEvent.start.format('DD/MM/YYYY HH:mm'));
+              $("#inputEndDate").val(selectedEvent.end.format('DD/MM/YYYY HH:mm'));
+              $("#selectStudentId").val(selectedEvent.studentId);
+              $("#inputDescription").val(selectedEvent.description);
+              $("#selectTeacherId").val($("#currentTeacherId").val());
+          }
+        saveModal.show();
+      }
+      function saveAppointment(data) {
+          $.ajax({
+              type: 'POST',
+              url: '/appointment/AddOrUpdateAppointment',
+              data: data,
+              success: function(response){
+                  if(response == "200"){
+                      saveModal.hide();
+                      getAppointment();
+                      toastme.success("Randevunuz başarıyla eklendi");
+                  }else {
+                      saveModal.hide();
+                      toastme.warning("Randevu ekleme başarısız");
+                  }
+              },
+              error: function() {
+                      saveModal.hide();
+                      toastme.error("Randevu ekleme işlemi gerçekleşmedi. Erişim sağlanamadı!");
+              }
+          })
+      }
+      $('#btnSave').click(function() {
+          //validasyon
+          if($("#currentTeacherId").val() == 0) {
+            toastme.error("Öğretmen seçiniz");
+            return;
+          }
+          var appointment ={
+              Id : $("#appointmentId").val(),
+              UserId : $("#selectTeacherId").val(),
+              StartDate: $("#inputStartDate").val(),
+              EndDate: $("#inputEndDate").val(),
+              StudentNameSurname: $("#selectStudentId option:selected").text(),
+              StudentId: $("#selectStudentId option:selected").val(),
+              Description: $("#inputDescription").val(),
+          }
+          saveAppointment(appointment);
+      });
+        $(".fc-next-button").click(function() {
+            $(this).css("display", "none");
+        })
+
+        $(".fc-today-button").click(function() {
+            $(".fc-next-button").css("display", "block");
+        })
+      $(".user.teacher").click(function(){
+          var teacherId = $(this).data("teacherid");
+          $(".user.teacher").removeClass("active");
+          $(this).addClass("active");
+            toastme.success("Öğretmen seçildi");
+          getBusinessHoursByTeacher(teacherId);
+          getAppointmentsByTeacher(teacherId);
+      })
+
+
+    });
+
+
+</script>
+}
+

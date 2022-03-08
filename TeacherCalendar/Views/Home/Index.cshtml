@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section Styles {
+    <link rel="stylesheet" href='/lib/fullcalendar/lib/main.css' asp-append-version="true" />
+}
+
+<div id='calendar'></div>
+
+@section Scripts {
+    <script src='/lib/fullcalendar/lib/main.js' asp-append-version="true"></script>
+    <script src="/lib/fullcalendar/lib/locales-all.js" asp-append-version="true"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          locale: 'tr',
+          headerToolbar: {
+              left: 'prev,next',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          },
+          initialView: 'dayGridMonth',
+          weekends: true,
+          allDaySlot: false,
+          titleFormat: {
+              year : 'numeric',
+              month: 'long',
+              day: 'numeric'
+          },
+          titleRangeSeparator : ' / ',
+          dayHeaderFormat: {
+            weekday: 'long'
+            //month: 'numeric', 
+            //day: 'numeric',
+          }
+
+        });
+        calendar.render();
+      });
+    </script>
+}

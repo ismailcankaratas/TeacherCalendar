@@ -1,0 +1,123 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+}
+
+<!-- BEGIN: Content-->
+<div class="app-content content ">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+        </div>
+        <div class="content-body">
+            <div class="auth-wrapper auth-basic px-2">
+                <div class="auth-inner my-2">
+                    <!-- Register basic -->
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <h1 class="text-center">DersEvi</h1>
+                            <h4 class="card-title mb-1">Randevu yönetim sistemi</h4>
+                            <form asp-action="Register" class="auth-login-form mt-2">
+
+                                <div class="card-text mb-2 text-danger" asp-validation-summary="ModelOnly"></div>
+
+                                <div class="mb-1">
+                                    <label asp-for="UserName" class="form-label"></label>
+                                    <span class="text-danger" asp-validation-for="UserName"></span>
+                                    <input asp-for="UserName" class="form-control">
+                                </div>
+                                <div class="mb-1">
+                                    <label asp-for="Name" class="form-label"></label>
+                                    <span class="text-danger" asp-validation-for="Name"></span>
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+
+                                <div class="mb-1">
+                                    <label asp-for="Surname" class="form-label"></label>
+                                    <span class="text-danger" asp-validation-for="Surname"></span>
+                                    <input asp-for="Surname" class="form-control">
+                                </div>
+
+                                <div class="mb-1">
+                                    <label asp-for="Email" class="form-label"></label>
+                                    <span class="text-danger" asp-validation-for="Email"></span>
+                                    <input asp-for="Email" class="form-control">
+                                </div>
+
+                                <div class="mb-1">
+                                    <label asp-for="Color" class="form-label"></label>
+                                    <span class="text-danger" asp-validation-for="Color"></span>
+                                    <input asp-for="Color" class="form-control" readonly>
+                                    <div class="card">
+                                        <div class="card-body text-center d-flex justify-content-center align-items-center flex-column">
+                                            <p>Renk Seçiciyi etkinleştirmek için <strong>mor kareye tıklayın</strong> </p>
+                                            <input type="color" class="form-control form-control-color" id="eventColor" value="#563d7c" title="Choose your color">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-1">
+                                    <label asp-for="Password" class="form-label"></label>
+                                    <span class="text-danger" asp-validation-for="Password"></span>
+                                    <input asp-for="Password" class="form-control">
+                                </div>
+
+                                <div class="mb-1">
+                                    <label class="form-check-label" asp-for="AccountType" />
+                                    <span class="text-danger" asp-validation-for="AccountType"></span>
+                                    <select class="form-select" asp-for="AccountType">
+                                        <option value="0" selected>Bir hesap türü seçiniz</option>
+                                        <option value="Teacher">Öğretmen</option>
+                                        <option value="Student">Öğrenci</option>
+                                        <option value="Manager">Müdür</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-1" id="job">
+                                    <label class="form-check-label" asp-for="Job" />
+                                    <span class="text-danger" asp-validation-for="Job"></span>
+                                    <select class="form-select" asp-for="Job">
+                                        <option value="0" selected>Bir bölüm seçiniz</option>
+                                        <option value="Matematik Öğretmeni">Matematik Öğretmeni</option>
+                                        <option value="Türkçe Öğretmeni">Türkçe Öğretmeni</option>
+                                        <option value="Fizik Öğretmeni">Fizik Öğretmeni</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Kayıt Ekle</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /Register basic -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- END: Content-->
+@section Scripts {
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script>
+            $("#job").css("display", "none");
+            $("#AccountType").on("change", function() {
+                var accountType = $("#AccountType").val()
+                if(accountType== "Teacher") {
+                    $("#job").css("display", "block");
+                }else {
+                $("#job").css("display", "none");
+                $("#Job").val("0");
+                }
+            })
+            $("#eventColor").on("change", function() {
+                $(document.body).css('background-color', $(this).val());
+                $("#Color").val($(this).val());
+            })
+</script>
+}
+

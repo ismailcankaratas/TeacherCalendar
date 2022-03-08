@@ -1,0 +1,59 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+}
+
+<!-- BEGIN: Content-->
+<div class="app-content content ">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+        </div>
+        <div class="content-body">
+            <div class="auth-wrapper auth-basic px-2">
+                <div class="auth-inner my-2">
+                    <!-- Login basic -->
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <h1 class="text-center">DersEvi</h1>
+                            <h4 class="card-title mb-1">Randevu yönetim sistemi</h4>
+                            <form asp-action="Login" class="auth-login-form mt-2">
+
+                            <div class="card-text mb-2 text-danger" asp-validation-summary="ModelOnly"></div>
+
+                                <div class="mb-1">
+                                    <label asp-for="UserName" class="form-label"></label>
+                                    <span class="text-danger" asp-validation-for="UserName"></span>
+                                    <input asp-for="UserName" class="form-control">
+                                </div>
+
+                                <div class="mb-1">
+                                        <label asp-for="Password" class="form-label"></label>
+                                        <span class="text-danger" asp-validation-for="Password"></span>
+                                        <input asp-for="Password" class="form-control form-control-merge" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                                </div>
+                                <div class="mb-1">
+                                    <div class="form-check">
+                                        <label class="form-check-label" asp-for="RememberMe"></label>
+                                        <input class="form-check-input" asp-for="RememberMe">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Giriş yap</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /Login basic -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- END: Content-->
+
